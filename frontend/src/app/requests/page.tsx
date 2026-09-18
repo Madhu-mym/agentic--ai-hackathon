@@ -8,10 +8,7 @@ import {
   KeyRound,
   Monitor,
   Laptop,
-  AlertTriangle,
   HelpCircle,
-  FileCheck,
-  ShieldAlert,
 } from "lucide-react";
 import {
   INITIAL_REQUESTS,
@@ -22,12 +19,14 @@ import {
 export default function RequestsPage() {
   const [requests, setRequests] = useState<AccessRequestItem[]>(INITIAL_REQUESTS);
   const [requestType, setRequestType] = useState<AccessRequestItem["type"]>("Software");
-  const [selectedTool, setSelectedTool] = useState("");
+  const [selectedTool, setSelectedTool] = useState("GitHub Enterprise Write Access");
   const [customToolName, setCustomToolName] = useState("");
-  const [justification, setJustification] = useState("");
-  const [priority, setPriority] = useState<AccessRequestItem["priority"]>("Medium");
+  const [justification, setJustification] = useState(
+    "Need GitHub write access to clone core repositories and open pull requests during Week 1 onboarding."
+  );
+  const [priority, setPriority] = useState<AccessRequestItem["priority"]>("High");
   const [statusFilter, setStatusFilter] = useState<"All" | "Pending" | "Approved">("All");
-  const [isSuccessToast, setIsSuccessToast] = useState(false);
+  const [submittedRequest, setSubmittedRequest] = useState<AccessRequestItem | null>(null);
 
   // Available catalog tools based on chosen category
   const availableTools = REQUEST_CATALOG[requestType] || [];
@@ -49,12 +48,13 @@ export default function RequestsPage() {
     };
 
     setRequests([newRequest, ...requests]);
-    setSelectedTool("");
+    setSubmittedRequest(newRequest);
+    setSelectedTool("GitHub Enterprise Write Access");
     setCustomToolName("");
-    setJustification("");
-    setPriority("Medium");
-    setIsSuccessToast(true);
-    setTimeout(() => setIsSuccessToast(false), 4500);
+    setJustification(
+      "Need GitHub write access to clone core repositories and open pull requests during Week 1 onboarding."
+    );
+    setPriority("High");
   };
 
   const filteredRequests = requests.filter((req) => {
@@ -106,16 +106,24 @@ export default function RequestsPage() {
             </span>
           </div>
 
-          {/* Success Notification Alert */}
-          {isSuccessToast && (
-            <div className="p-3.5 bg-emerald-50 border border-emerald-200 rounded-xl flex items-start space-x-3 text-emerald-900 text-xs animate-in fade-in slide-in-from-top-2">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600 mt-0.5 shrink-0" />
-              <div>
-                <p className="font-bold">Request Submitted Successfully!</p>
-                <p className="text-emerald-700 mt-0.5">
-                  Your ticket was assigned an ID and queued for manager and IT approval. You can track progress in the Request History section.
-                </p>
+          {submittedRequest && (
+            <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-900 text-xs space-y-2">
+              <div className="flex items-start space-x-3">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 mt-0.5 shrink-0" />
+                <div>
+                  <p className="font-bold">Request submitted successfully</p>
+                  <p className="text-emerald-700 mt-0.5">
+                    Ticket {submittedRequest.id} for {submittedRequest.toolName} is queued for manager and IT approval. This is a mock submission — no backend is connected yet.
+                  </p>
+                </div>
               </div>
+              <button
+                type="button"
+                onClick={() => setSubmittedRequest(null)}
+                className="text-[11px] font-semibold text-emerald-800 underline underline-offset-2"
+              >
+                Submit another request
+              </button>
             </div>
           )}
 
@@ -139,7 +147,7 @@ export default function RequestsPage() {
                       key={item.id}
                       type="button"
                       onClick={() => {
-                        setRequestType(item.id as any);
+                        setRequestType(item.id as AccessRequestItem["type"]);
                         setSelectedTool("");
                       }}
                       className={`p-3 rounded-xl border text-xs font-semibold flex flex-col items-center justify-center space-y-1.5 transition-all ${

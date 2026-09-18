@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import {
   Search,
   BookOpen,
-  Tag,
   Clock,
   ArrowUpRight,
   X,
@@ -37,10 +36,10 @@ export default function PoliciesPage() {
         <div className="max-w-2xl space-y-2">
           <div className="inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700">
             <BookOpen className="w-3.5 h-3.5" />
-            <span>Central Knowledge Hub</span>
+            <span>Knowledge</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
-            Company Policies & Guidelines
+            Knowledge base
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 leading-relaxed">
             Search verified standards for remote work, health benefits, equipment allowances, and engineering best practices.

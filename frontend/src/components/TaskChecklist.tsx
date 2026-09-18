@@ -6,28 +6,15 @@ import {
   CheckCircle2,
   Circle,
   Clock,
-  Tag,
   ArrowUpRight,
-  Filter,
   CheckCheck,
 } from "lucide-react";
-import { INITIAL_TASKS, TaskItem } from "@/lib/mockData";
+import { TaskItem } from "@/lib/mockData";
+import { useTasks } from "@/lib/taskContext";
 
 export const TaskChecklist: React.FC = () => {
-  const [tasks, setTasks] = useState<TaskItem[]>(INITIAL_TASKS);
+  const { tasks, toggleTask, completedCount, totalCount, progressPercent } = useTasks();
   const [activeTab, setActiveTab] = useState<"all" | "day1" | "week1" | "pending" | "completed">("all");
-
-  const toggleTask = (id: string) => {
-    setTasks((prev) =>
-      prev.map((task) =>
-        task.id === id ? { ...task, isCompleted: !task.isCompleted } : task
-      )
-    );
-  };
-
-  const completedCount = tasks.filter((t) => t.isCompleted).length;
-  const totalCount = tasks.length;
-  const progressPercent = Math.round((completedCount / totalCount) * 100);
 
   // Filter tasks according to active tab
   const filteredTasks = tasks.filter((task) => {
@@ -48,6 +35,8 @@ export const TaskChecklist: React.FC = () => {
         return "bg-purple-50 text-purple-700 border-purple-200/60";
       case "Engineering":
         return "bg-amber-50 text-amber-800 border-amber-200/60";
+      case "Security":
+        return "bg-rose-50 text-rose-700 border-rose-200/60";
       default:
         return "bg-slate-50 text-slate-700 border-slate-200/60";
     }
@@ -98,7 +87,7 @@ export const TaskChecklist: React.FC = () => {
             <button
               key={tab.id}
               type="button"
-              onClick={() => setActiveTab(tab.id as any)}
+              onClick={() => setActiveTab(tab.id as typeof activeTab)}
               className={`px-3 py-1 text-xs rounded-lg font-medium transition-colors shrink-0 ${
                 activeTab === tab.id
                   ? "bg-slate-900 text-white font-semibold"

@@ -8,9 +8,7 @@ import {
   Sparkles,
   BookOpen,
   FileText,
-  CornerDownLeft,
   RotateCcw,
-  CheckCircle2,
 } from "lucide-react";
 import {
   ChatMessage,
@@ -23,9 +21,23 @@ const INITIAL_MESSAGES: ChatMessage[] = [
     id: "msg-welcome",
     role: "assistant",
     content:
-      "Welcome to your onboarding assistant! 👋\n\nI can answer questions regarding company policies, setting up your dev workstation, submitting equipment expenses, or team rituals. Ask a question below or click any of the suggested prompts to get started.",
-    timestamp: "Just now",
+      "Welcome to your onboarding assistant.\n\nI can help with company policies, workstation setup, equipment expenses, and first-week access. Ask a question below or use a suggested prompt.",
+    timestamp: "9:12 AM",
     sources: ["onboarding_welcome_guide.md §1.0"],
+  },
+  {
+    id: "msg-user-sample",
+    role: "user",
+    content: "How do I request GitHub write access so I can clone the core repositories?",
+    timestamp: "9:13 AM",
+  },
+  {
+    id: "msg-assistant-sample",
+    role: "assistant",
+    content:
+      "Submit an Access Request for GitHub Enterprise Write Access. Your manager and IT typically approve it within one business day, then you are added to the Core Infrastructure GitHub team.\n\nUntil that lands, you can still follow the Engineering Setup playbook and complete local toolchain setup.",
+    timestamp: "9:13 AM",
+    sources: ["onboarding_welcome_guide.md §3.2", "github_workflow_standards.md", "it_access_catalog.md"],
   },
 ];
 
@@ -69,7 +81,9 @@ export const ChatBot: React.FC<ChatBotProps> = ({ initialPrompt }) => {
     // Determine matching mock response based on keywords
     const lower = text.toLowerCase();
     let matched = MOCK_AI_RESPONSES.default;
-    if (lower.includes("equipment") || lower.includes("stipend") || lower.includes("monitor") || lower.includes("desk")) {
+    if (lower.includes("github") || lower.includes("write access") || lower.includes("repository")) {
+      matched = MOCK_AI_RESPONSES.github;
+    } else if (lower.includes("equipment") || lower.includes("stipend") || lower.includes("monitor") || lower.includes("desk")) {
       matched = MOCK_AI_RESPONSES.equipment;
     } else if (lower.includes("git") || lower.includes("branch") || lower.includes("pr") || lower.includes("review") || lower.includes("rfc")) {
       matched = MOCK_AI_RESPONSES.git;
@@ -170,12 +184,11 @@ export const ChatBot: React.FC<ChatBotProps> = ({ initialPrompt }) => {
                 {msg.content}
               </div>
 
-              {/* Source Document Citations */}
               {msg.sources && msg.sources.length > 0 && (
                 <div className="pt-2.5 border-t border-slate-100 space-y-1.5">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center space-x-1">
+                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider flex items-center space-x-1">
                     <BookOpen className="w-3 h-3 text-indigo-500" />
-                    <span>Verified Policy References</span>
+                    <span>Sources</span>
                   </span>
                   <div className="flex flex-wrap gap-1.5">
                     {msg.sources.map((src, i) => (

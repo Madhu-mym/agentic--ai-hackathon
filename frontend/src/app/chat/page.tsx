@@ -4,8 +4,6 @@ import {
   Sparkles,
   ShieldCheck,
   Zap,
-  BookOpen,
-  Info,
   CheckCircle2,
 } from "lucide-react";
 

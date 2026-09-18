@@ -36,7 +36,7 @@ export interface TaskItem {
   id: string;
   title: string;
   description: string;
-  category: "IT Setup" | "HR & Compliance" | "Team & Culture" | "Engineering";
+  category: "IT Setup" | "HR & Compliance" | "Team & Culture" | "Engineering" | "Security";
   timeframe: "Day 1" | "Week 1" | "Month 1";
   isCompleted: boolean;
   estimatedMinutes: number;
@@ -73,9 +73,11 @@ export interface TeamMember {
   department: string;
   email: string;
   slackHandle: string;
+  phone: string;
   timezone: string;
   isMentor: boolean;
   avatarInitials: string;
+  directoryLabel?: string;
 }
 
 export interface ChatMessage {
@@ -123,7 +125,7 @@ export const INITIAL_TASKS: TaskItem[] = [
     timeframe: "Day 1",
     isCompleted: true,
     estimatedMinutes: 20,
-    actionUrl: "/policies",
+    actionUrl: "/knowledge",
     actionLabel: "View IT Guide",
   },
   {
@@ -143,7 +145,7 @@ export const INITIAL_TASKS: TaskItem[] = [
     timeframe: "Day 1",
     isCompleted: false,
     estimatedMinutes: 45,
-    actionUrl: "/policies",
+    actionUrl: "/knowledge",
     actionLabel: "Read Dev Setup",
   },
   {
@@ -174,7 +176,7 @@ export const INITIAL_TASKS: TaskItem[] = [
     timeframe: "Week 1",
     isCompleted: false,
     estimatedMinutes: 35,
-    actionUrl: "/policies",
+    actionUrl: "/knowledge",
     actionLabel: "Read RFC Guide",
   },
   {
@@ -190,11 +192,11 @@ export const INITIAL_TASKS: TaskItem[] = [
     id: "task-108",
     title: "Review Security Policies & Sign Data Protection Agreement",
     description: "Read the SOC 2 compliance checklist and confirm device encryption policies.",
-    category: "Security" as any,
+    category: "Security",
     timeframe: "Week 1",
     isCompleted: false,
     estimatedMinutes: 25,
-    actionUrl: "/policies",
+    actionUrl: "/knowledge",
     actionLabel: "Read Security Doc",
   },
 ];
@@ -354,9 +356,11 @@ export const TEAM_MEMBERS: TeamMember[] = [
     department: "Core Infrastructure",
     email: "sarah.chen@enterprise.io",
     slackHandle: "@sarah.chen",
+    phone: "+1 (415) 555-0142",
     timezone: "US Pacific (PST)",
     isMentor: true,
     avatarInitials: "SC",
+    directoryLabel: "Onboarding Buddy",
   },
   {
     id: "user-david",
@@ -365,9 +369,11 @@ export const TEAM_MEMBERS: TeamMember[] = [
     department: "Engineering Leadership",
     email: "david.kim@enterprise.io",
     slackHandle: "@david.kim",
+    phone: "+1 (212) 555-0198",
     timezone: "US Eastern (EST)",
     isMentor: false,
     avatarInitials: "DK",
+    directoryLabel: "Manager",
   },
   {
     id: "user-marcus",
@@ -376,9 +382,11 @@ export const TEAM_MEMBERS: TeamMember[] = [
     department: "Information Technology",
     email: "marcus.j@enterprise.io",
     slackHandle: "@marcus.it",
+    phone: "+1 (312) 555-0164",
     timezone: "US Central (CST)",
     isMentor: false,
     avatarInitials: "MJ",
+    directoryLabel: "IT Support",
   },
   {
     id: "user-emily",
@@ -387,9 +395,11 @@ export const TEAM_MEMBERS: TeamMember[] = [
     department: "People Operations",
     email: "emily.taylor@enterprise.io",
     slackHandle: "@emily.hr",
+    phone: "+1 (415) 555-0117",
     timezone: "US Pacific (PST)",
     isMentor: false,
     avatarInitials: "ET",
+    directoryLabel: "HR",
   },
   {
     id: "user-jordan",
@@ -398,6 +408,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     department: "Design Systems",
     email: "jordan.lee@enterprise.io",
     slackHandle: "@jordan.lee",
+    phone: "+44 20 7946 0958",
     timezone: "Europe/London (GMT)",
     isMentor: false,
     avatarInitials: "JL",
@@ -408,9 +419,9 @@ export const TEAM_MEMBERS: TeamMember[] = [
 // Conversational AI Mock Prompts & Contextual Responses
 // ---------------------------------------------------------------------------
 export const SUGGESTED_CHAT_PROMPTS = [
+  "How do I request GitHub write access?",
   "What is our home office equipment allowance and how do I expense it?",
   "Where can I find our git branch naming conventions and PR review SLAs?",
-  "What are the company core collaboration hours?",
   "How does our 401(k) matching and annual health stipend work?",
 ];
 
@@ -434,5 +445,9 @@ export const MOCK_AI_RESPONSES: Record<string, { answer: string; sources: string
   benefits: {
     answer: "### Benefits & 401(k) Matching\n\n• **Medical, Dental & Vision**: Coverage begins on your first day. Check your benefits portal login sent via email.\n• **401(k) Matching**: 100% dollar-for-dollar match on your first **5% of base salary**, vesting immediately.\n• **Wellness Perk**: **$1,200 annual wellness credit** available through your Ramp virtual card for gym memberships, therapy, or fitness equipment.",
     sources: ["benefits_summary_2026.pdf", "401k_plan_document.pdf"],
+  },
+  github: {
+    answer: "### GitHub access for new engineers\n\n• Submit an **Access Request** for **GitHub Enterprise Write Access** from the Access Request page.\n• Your manager (David Kim) and onboarding buddy typically approve within one business day.\n• After approval, IT adds you to the Core Infrastructure GitHub team so you can clone repos and open pull requests.\n• Until write access lands, you can still read the Engineering Setup playbook and complete local toolchain setup.",
+    sources: ["onboarding_welcome_guide.md §3.2", "github_workflow_standards.md", "it_access_catalog.md"],
   },
 };
