@@ -1,0 +1,26 @@
+[
+  {
+    "chunk_id": "sample_employee_redacted.txt#chunk_1",
+    "source_file": "sample_employee_redacted.txt",
+    "chunk_index": 1,
+    "content": "ACME CORPORATION - EMPLOYEE ONBOARDING PROFILE\nConfidential Human Resources Record\n\nEmployee Name: Alex Rivera\nEmployee ID: [REDACTED]\nRole: Senior Cloud Infrastructure Engineer\nDepartment: Engineering\nEmail: [REDACTED]\nPhone: [REDACTED]\nSalary: [REDACTED]\nBank Account: [REDACTED]\nPAN: [REDACTED]\nAadhaar: [REDACTED]\nInitial Password: [REDACTED]\nDev API Token: [REDACTED]"
+  },
+  {
+    "chunk_id": "sample_employee_redacted.txt#chunk_2",
+    "source_file": "sample_employee_redacted.txt",
+    "chunk_index": 2,
+    "content": "Security Notes:\nPlease ensure all direct deposit details are verified with payroll before the first pay cycle.\nContact IT support at [REDACTED] or call [REDACTED] for workstation provisioning."
+  },
+  {
+    "chunk_id": "sample_employee_redacted.txt#chunk_1",
+    "source_file": "sample_employee_redacted.txt",
+    "chunk_index": 1,
+    "content": "ACME CORPORATION - EMPLOYEE ONBOARDING PROFILE\nConfidential Human Resources Record\n\nEmployee Name: Alex Rivera\nEmployee ID: [REDACTED]\nRole: Senior Cloud Infrastructure Engineer\nDepartment: Engineering\nEmail: [REDACTED]\nPhone: [REDACTED]\nSalary: [REDACTED]\nBank Account: [REDACTED]\nPAN: [REDACTED]\nAadhaar: [REDACTED]\nInitial Password: [REDACTED]\nDev API Token: [REDACTED]"
+  },
+  {
+    "chunk_id": "sample_employee_redacted.txt#chunk_2",
+    "source_file": "sample_employee_redacted.txt",
+    "chunk_index": 2,
+    "content": "Security Notes:\nPlease ensure all direct deposit details are verified with payroll before the first pay cycle.\nContact IT support at [REDACTED] or call [REDACTED] for workstation provisioning."
+  }
+]

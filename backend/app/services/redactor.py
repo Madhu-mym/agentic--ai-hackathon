@@ -201,7 +201,7 @@ class DocumentRedactor:
                     trail_spaces = len(orig_matched) - len(orig_matched.rstrip())
                     adj_start = start + lead_spaces
                     adj_end = end - trail_spaces
-                    if adj_start < adj_end and value:
+                    if adj_start < adj_end and value and value != REDACTED_TOKEN:
                         raw_matches.append(_RuleMatch(adj_start, adj_end, entity_type, value))
 
         # Merge overlapping/redundant spans

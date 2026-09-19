@@ -29,6 +29,7 @@ if sys.stderr and hasattr(sys.stderr, "reconfigure"):
 from app.services.classifier import DocumentClassifier
 from app.services.redactor import DocumentRedactor
 from app.services.document_processor import DocumentProcessor, SecurityError
+from app.services.rag_engine import RAGEngine, SecurityViolationError
 
 
 def _format_display_path(path_str: str) -> str:
@@ -133,10 +134,54 @@ def cmd_inspect(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_ingest(args: argparse.Namespace) -> int:
+    """Execute document ingestion into the local RAG vector store."""
+    engine = RAGEngine()
+    try:
+        summary = engine.ingest_document(args.file)
+    except SecurityViolationError as sve:
+        print(f"\nSECURITY VIOLATION:\n{sve}", file=sys.stderr)
+        return 1
+    except Exception as e:
+        print(f"Error during ingestion: {e}", file=sys.stderr)
+        return 1
+
+    print(f"Document ingested: {summary.source_file}")
+    print(f"Chunks created: {summary.chunks_created}")
+    print(f"Total indexed chunks: {summary.total_indexed_chunks}")
+    print("Vector index updated successfully.")
+    return 0
+
+
+def cmd_ask(args: argparse.Namespace) -> int:
+    """Execute RAG question-answering with local Ollama qwen2.5:3b."""
+    engine = RAGEngine()
+    try:
+        res = engine.query(args.question, top_k=args.top_k)
+    except Exception as e:
+        print(f"Error generating answer: {e}", file=sys.stderr)
+        return 1
+
+    print("Question:")
+    print(res.question)
+
+    print("\nAnswer:")
+    print(res.answer)
+
+    print("\nSources:")
+    if res.sources:
+        for s in res.sources:
+            print(f"- {s}")
+    else:
+        print("- (None)")
+
+    return 0
+
+
 def main():
     parser = argparse.ArgumentParser(
         prog="python -m app.cli",
-        description="Document Security Pipeline CLI: Classify, redact, and inspect sensitive documents."
+        description="Document Security & RAG Pipeline CLI: Classify, redact, inspect, ingest, and ask questions."
     )
     subparsers = parser.add_subparsers(dest="command", required=True, help="Command to run")
 
@@ -153,6 +198,15 @@ def main():
     parser_inspect = subparsers.add_parser("inspect", help="Inspect document for sensitive entities without writing")
     parser_inspect.add_argument("file", help="Path to document file to inspect")
 
+    # ingest
+    parser_ingest = subparsers.add_parser("ingest", help="Ingest a redacted document into the local RAG vector store")
+    parser_ingest.add_argument("file", help="Path to redacted document file to ingest")
+
+    # ask
+    parser_ask = subparsers.add_parser("ask", help="Ask a question grounded in ingested redacted documents")
+    parser_ask.add_argument("question", help="The question to ask")
+    parser_ask.add_argument("--top-k", "-k", type=int, default=3, help="Number of context chunks to retrieve (default: 3)")
+
     args = parser.parse_args()
 
     if args.command == "classify":
@@ -161,6 +215,10 @@ def main():
         sys.exit(cmd_redact(args))
     elif args.command == "inspect":
         sys.exit(cmd_inspect(args))
+    elif args.command == "ingest":
+        sys.exit(cmd_ingest(args))
+    elif args.command == "ask":
+        sys.exit(cmd_ask(args))
     else:
         parser.print_help()
         sys.exit(1)
@@ -168,3 +226,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
