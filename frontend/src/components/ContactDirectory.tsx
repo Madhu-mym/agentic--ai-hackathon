@@ -1,12 +1,14 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { supabase } from "@/lib/Supabase";
 import { Mail, MessageSquare, UserCheck, Search, Globe2, Phone } from "lucide-react";
-import { TEAM_MEMBERS } from "@/lib/mockData";
+
 
 export const ContactDirectory: React.FC = () => {
   const [selectedDept, setSelectedDept] = useState<string>("All");
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [members, setMembers] = useState<any[]>([]);
 
   const departments = [
     "All",
@@ -16,8 +18,25 @@ export const ContactDirectory: React.FC = () => {
     "People Operations",
     "Design Systems",
   ];
+  useEffect(() => {
+    const loadMembers = async () => {
+      const { data, error } = await supabase
+        .from("contacts")
+        .select("*")
+        .order("name", { ascending: true });
+  
+      if (error) {
+        console.error("Error loading contacts:", error);
+        return;
+      }
+  
+      setMembers(data || []);
+    };
+  
+    loadMembers();
+  }, []);
 
-  const filteredMembers = TEAM_MEMBERS.filter((member) => {
+  const filteredMembers = members.filter((member) => {
     const matchesDept = selectedDept === "All" || member.department === selectedDept;
     const matchesSearch =
       member.name.toLowerCase().includes(searchQuery.toLowerCase()) ||

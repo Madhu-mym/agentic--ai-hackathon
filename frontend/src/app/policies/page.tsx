@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { supabase } from "@/lib/Supabase";
 import {
   Search,
   BookOpen,
@@ -11,16 +12,46 @@ import {
   Filter,
   CheckCircle2,
 } from "lucide-react";
-import { POLICIES_DATA, CompanyPolicy } from "@/lib/mockData";
+import { CompanyPolicy } from "@/lib/mockData";
 
 export default function PoliciesPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [activeModalPolicy, setActiveModalPolicy] = useState<CompanyPolicy | null>(null);
 
-  const categories = ["All", "Workplace", "Engineering", "Security", "HR & Benefits", "Finance"];
+  const [policies, setPolicies] = useState<CompanyPolicy[]>([]);
 
-  const filteredPolicies = POLICIES_DATA.filter((policy) => {
+  const categories = ["All", "Workplace", "Engineering", "Security", "HR & Benefits", "Finance"];
+  useEffect(() => {
+    const loadPolicies = async () => {
+      const { data, error } = await supabase
+        .from("policies")
+        .select("*")
+        .order("created_at", { ascending: false });
+  
+      if (error) {
+        console.error("Error loading policies:", error);
+        return;
+      }
+  
+      setPolicies(
+        (data || []).map((policy) => ({
+          id: policy.id,
+          title: policy.title,
+          summary: policy.description,
+          category: policy.category,
+          tags: [],
+          readTimeMinutes: 3,
+          lastUpdated: new Date(policy.created_at).toLocaleDateString(),
+          contentPreview: policy.description,
+        }))
+      );
+    };
+  
+    loadPolicies();
+  }, []);
+
+  const filteredPolicies = policies.filter((policy) => {
     const matchesCategory = selectedCategory === "All" || policy.category === selectedCategory;
     const matchesSearch =
       policy.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
