@@ -13,8 +13,9 @@ import {
 import {
   ChatMessage,
   SUGGESTED_CHAT_PROMPTS,
-  MOCK_AI_RESPONSES,
 } from "@/lib/mockData";
+
+import { apiClient } from "@/lib/api";
 
 const INITIAL_MESSAGES: ChatMessage[] = [
   {
@@ -79,40 +80,47 @@ export const ChatBot: React.FC<ChatBotProps> = ({ initialPrompt }) => {
     setIsTyping(true);
 
     // Determine matching mock response based on keywords
-    const lower = text.toLowerCase();
-    let matched = MOCK_AI_RESPONSES.default;
-    if (lower.includes("github") || lower.includes("write access") || lower.includes("repository")) {
-      matched = MOCK_AI_RESPONSES.github;
-    } else if (lower.includes("equipment") || lower.includes("stipend") || lower.includes("monitor") || lower.includes("desk")) {
-      matched = MOCK_AI_RESPONSES.equipment;
-    } else if (lower.includes("git") || lower.includes("branch") || lower.includes("pr") || lower.includes("review") || lower.includes("rfc")) {
-      matched = MOCK_AI_RESPONSES.git;
-    } else if (lower.includes("hour") || lower.includes("schedule") || lower.includes("time") || lower.includes("sync")) {
-      matched = MOCK_AI_RESPONSES.hours;
-    } else if (lower.includes("benefit") || lower.includes("401k") || lower.includes("health") || lower.includes("wellness")) {
-      matched = MOCK_AI_RESPONSES.benefits;
-    }
-
-    // Realistic typing delay (600ms) to simulate RAG retrieval
-    setTimeout(() => {
+    try {
+      const result = await apiClient.sendChatMessage(text, "demo");
+    
       const assistantMessage: ChatMessage = {
         id: `ast-${Date.now()}`,
         role: "assistant",
-        content: matched.answer,
-        timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-        sources: matched.sources,
+        content: result.response,
+        timestamp: new Date().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+        sources: result.sources,
       };
+    
       setMessages((prev) => [...prev, assistantMessage]);
+    } catch (error) {
+      const assistantMessage: ChatMessage = {
+        id: `ast-${Date.now()}`,
+        role: "assistant",
+        content:
+          "Sorry, I couldn't connect to the onboarding assistant. Please make sure the backend is running.",
+        timestamp: new Date().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+      };
+    
+      setMessages((prev) => [...prev, assistantMessage]);
+    } finally {
       setIsTyping(false);
-    }, 600);
-  };
+    }
+    };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage();
     }
-  };
+};
+
+ 
 
   const resetChat = () => {
     setMessages(INITIAL_MESSAGES);
