@@ -1,0 +1,19 @@
+ACME CORPORATION - EMPLOYEE ONBOARDING PROFILE
+Confidential Human Resources Record
+
+Employee Name: Alex Rivera
+Employee ID: EMP-48291
+Role: Senior Cloud Infrastructure Engineer
+Department: Engineering
+Email: alex.rivera@acme.com
+Phone: +1-555-0199
+Salary: ₹12,50,000
+Bank Account: 123456789012
+PAN: ABCDE1234F
+Aadhaar: 2345 6789 0123
+Initial Password: SecretPassword123
+Dev API Token: sk-test-example-123456789
+
+Security Notes:
+Please ensure all direct deposit details are verified with payroll before the first pay cycle.
+Contact IT support at it-support@acme.com or call +1-555-0100 for workstation provisioning.

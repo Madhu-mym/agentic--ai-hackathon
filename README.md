@@ -152,3 +152,51 @@ npm run dev
 ```bash
 docker compose up --build
 ```
+
+---
+
+## 🔒 Document Security Pipeline (Classification + Redaction CLI)
+
+A local, deterministic document security pipeline that classifies document sensitivity, detects sensitive PII/credentials, and generates sanitized copies with `[REDACTED]` values before documents enter the RAG pipeline.
+
+### Key Security Invariants
+- **Zero External AI/API Calls**: Classification and redaction are 100% local, rule-based, and deterministic.
+- **Original Document Immutability**: The original document is opened read-only and is strictly protected against overwriting.
+- **Separate Output Storage**: Sanitized copies are saved to a separate directory (`data/redacted/`) for downstream RAG ingestion.
+
+### Classification Levels
+- **PUBLIC**: General public information with no sensitive entities.
+- **INTERNAL**: Internal organizational data (Employee IDs, internal emails, phone numbers).
+- **CONFIDENTIAL**: Financial and tax information (Salaries, bank accounts, PAN).
+- **RESTRICTED**: High-risk credentials and national identity data (API tokens, passwords, Aadhaar).
+
+### CLI Commands
+
+From the `backend/` directory:
+
+```bash
+cd backend
+```
+
+1. **Classify sensitivity**:
+   ```bash
+   python -m app.cli classify data/input/sample_employee.txt
+   ```
+
+2. **Inspect sensitive entities (Audit)**:
+   ```bash
+   python -m app.cli inspect data/input/sample_employee.txt
+   ```
+
+3. **Redact document (Generates sanitized copy)**:
+   ```bash
+   python -m app.cli redact data/input/sample_employee.txt
+   ```
+   *(Use `--output <path>` to specify a custom destination.)*
+
+### Running Automated Tests
+
+```bash
+cd backend
+python -m unittest discover tests
+```

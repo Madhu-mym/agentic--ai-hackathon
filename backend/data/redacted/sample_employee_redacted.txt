@@ -1,0 +1,19 @@
+ACME CORPORATION - EMPLOYEE ONBOARDING PROFILE
+Confidential Human Resources Record
+
+Employee Name: Alex Rivera
+Employee ID: [REDACTED]
+Role: Senior Cloud Infrastructure Engineer
+Department: Engineering
+Email: [REDACTED]
+Phone: [REDACTED]
+Salary: [REDACTED]
+Bank Account: [REDACTED]
+PAN: [REDACTED]
+Aadhaar: [REDACTED]
+Initial Password: [REDACTED]
+Dev API Token: [REDACTED]
+
+Security Notes:
+Please ensure all direct deposit details are verified with payroll before the first pay cycle.
+Contact IT support at [REDACTED] or call [REDACTED] for workstation provisioning.
