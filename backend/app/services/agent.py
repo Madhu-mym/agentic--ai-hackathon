@@ -1,41 +1,61 @@
-"""
-AI Onboarding Agent Service (Placeholder)
-
-Responsibilities for future implementation:
-- Orchestrate autonomous onboarding assistant workflows.
-- Interpret user intent (e.g. asking for policy information, checking pending tasks, creating access tickets).
-- Provide tool-calling capabilities:
-    * Tool 1: policy_search(query) -> calls RAGEngine
-    * Tool 2: list_my_tasks(user_id) -> queries task database
-    * Tool 3: complete_task(task_id) -> updates checklist progress
-    * Tool 4: submit_access_request(item, reason) -> files IT ticket
-    * Tool 5: find_teammates(department) -> retrieves directory contacts
-- Maintain conversational memory across multi-turn sessions.
-"""
-
 from typing import Dict, Any, Optional
-from app.services.rag_engine import RAGEngine
 
 
 class OnboardingAgent:
-    def __init__(self, rag_engine: Optional[RAGEngine] = None):
-        self.rag_engine = rag_engine or RAGEngine()
-        # TODO: Initialize tool registry, LLM function calling schema, and memory store
+    def __init__(self, rag_engine=None):
+        self.rag_engine = rag_engine
 
-    async def run(self, user_message: str, user_id: str, session_id: Optional[str] = None) -> Dict[str, Any]:
-        """
-        TODO:
-        1. Classify incoming user message intent.
-        2. If informational query -> query RAG engine and synthesize answer.
-        3. If actionable request -> invoke relevant tool (task update, equipment request, etc.).
-        4. Return structured response with answer text and action metadata.
-        """
-        # Placeholder response
+    async def run(
+        self,
+        user_message: str,
+        user_id: str,
+        session_id: Optional[str] = None
+    ) -> Dict[str, Any]:
+
+        message = user_message.lower()
+
+        if "leave" in message or "policy" in message:
+            answer = (
+                "Our onboarding policies provide guidelines for employees. "
+                "For leave-related questions, please refer to the Leave Policy "
+                "available in the Policies section."
+            )
+            source = "Leave Policy"
+
+        elif "task" in message or "onboarding" in message:
+            answer = (
+                "Your onboarding includes completing the welcome orientation, "
+                "setting up your account, reviewing company policies, meeting "
+                "your team, and completing the required onboarding tasks."
+            )
+            source = "Onboarding Tasks"
+
+        elif "it" in message or "support" in message or "contact" in message:
+            answer = (
+                "For IT-related issues, you can contact the IT Support team. "
+                "You can find their contact details in the Contacts section."
+            )
+            source = "Contacts"
+
+        elif "hello" in message or "hi" in message:
+            answer = (
+                "Hello! I'm your AI Onboarding Assistant. "
+                "You can ask me about onboarding tasks, company policies, "
+                "or who to contact for help."
+            )
+            source = "Onboarding Assistant"
+
+        else:
+            answer = (
+                "I can help with onboarding tasks, company policies, "
+                "and finding the right contact. Try asking: "
+                "\"What are my onboarding tasks?\" or "
+                "\"Who should I contact for IT support?\""
+            )
+            source = "Onboarding Knowledge Base"
+
         return {
-            "answer": (
-                f"Hello! I am your AI Onboarding Assistant. You said: '{user_message}'. "
-                "Agentic tool orchestration and policy search will be activated in the next development phase."
-            ),
-            "sources": ["company_onboarding_guide.md"],
-            "session_id": session_id or "default-session",
+            "answer": answer,
+            "sources": [source],
+            "session_id": session_id or "demo-session",
         }
