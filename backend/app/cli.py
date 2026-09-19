@@ -178,10 +178,37 @@ def cmd_ask(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_agent(args: argparse.Namespace) -> int:
+    """Execute Agentic AI decision and action loop."""
+    from app.services.agent_orchestrator import AgentOrchestrator, AgentAction
+    orchestrator = AgentOrchestrator()
+    try:
+        res = orchestrator.process(args.question, top_k=args.top_k)
+    except Exception as e:
+        print(f"Agent Error: {e}", file=sys.stderr)
+        return 1
+
+    print(f"Question: {res.question}\n")
+    print(f"Agent action: {res.action.value}\n")
+    print(f"Tool executed: {res.tool_executed}\n")
+
+    if res.action == AgentAction.CREATE_ACCESS_REQUEST:
+        print(f"Result: {res.answer}")
+    else:
+        print(f"Answer: {res.answer}")
+
+    if res.sources:
+        print("\nSources:")
+        for s in res.sources:
+            print(f"- {s}")
+
+    return 0
+
+
 def main():
     parser = argparse.ArgumentParser(
         prog="python -m app.cli",
-        description="Document Security & RAG Pipeline CLI: Classify, redact, inspect, ingest, and ask questions."
+        description="Document Security, RAG & Agentic AI CLI: Classify, redact, inspect, ingest, ask, and agent actions."
     )
     subparsers = parser.add_subparsers(dest="command", required=True, help="Command to run")
 
@@ -207,6 +234,11 @@ def main():
     parser_ask.add_argument("question", help="The question to ask")
     parser_ask.add_argument("--top-k", "-k", type=int, default=3, help="Number of context chunks to retrieve (default: 3)")
 
+    # agent
+    parser_agent = subparsers.add_parser("agent", help="Ask the autonomous onboarding agent (routes to RAG, access requests, or conversational replies)")
+    parser_agent.add_argument("question", help="The user prompt or command for the agent")
+    parser_agent.add_argument("--top-k", "-k", type=int, default=3, help="Number of context chunks for knowledge search (default: 3)")
+
     args = parser.parse_args()
 
     if args.command == "classify":
@@ -219,6 +251,8 @@ def main():
         sys.exit(cmd_ingest(args))
     elif args.command == "ask":
         sys.exit(cmd_ask(args))
+    elif args.command == "agent":
+        sys.exit(cmd_agent(args))
     else:
         parser.print_help()
         sys.exit(1)
@@ -226,4 +260,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 

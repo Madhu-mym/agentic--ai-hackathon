@@ -10,6 +10,8 @@ from app.services.vector_store import LocalVectorStore, DocumentChunk
 from app.services.document_parser import DocumentParser
 from app.services.ollama_client import OllamaClient, OllamaServiceError
 from app.services.rag_engine import RAGEngine, RAGAnswer, SecurityViolationError, IngestionSummary
+from app.services.access_request_service import AccessRequestService
+from app.services.agent_orchestrator import AgentOrchestrator, AgentAction, AgentResult
 
 __all__ = [
     "DocumentClassifier",
@@ -28,4 +30,8 @@ __all__ = [
     "RAGAnswer",
     "SecurityViolationError",
     "IngestionSummary",
+    "AccessRequestService",
+    "AgentOrchestrator",
+    "AgentAction",
+    "AgentResult",
 ]
